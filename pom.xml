@@ -6,15 +6,11 @@
     <groupId>org.primefaces.extensions</groupId>
     <artifactId>primefaces-integration-tests</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <name>primefaces-integration-tests</name>
 
     <properties>
-        <primefaces-selenium.adapter>org.primefaces.extensions.integrationtests.PrimeFacesSeleniumTomEEFirefoxAdapterImpl</primefaces-selenium.adapter>
-        <webdriver.chromeDriverBinary>chromedriver</webdriver.chromeDriverBinary>
-        <webdriver.firefoxDriverBinary>geckodriver</webdriver.firefoxDriverBinary>
-        <webdriver.headless>false</webdriver.headless>
         <!-- build configuration -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.min.version>1.8</java.min.version>
@@ -22,12 +18,15 @@
         <primefaces.version>8.0</primefaces.version>
         <primefaces-selenium.version>8.0.0</primefaces-selenium.version>
         <myfaces.version>2.3.6</myfaces.version>
-        <junit.version>5.5.2</junit.version>
         <tomee.version>8.0.3</tomee.version>
         <!-- plugin versions -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <!-- Tests versions -->
+        <junit.version>5.6.0</junit.version>
+        <selenium.version>3.141.59</selenium.version>
+        <selenium.jupiter.version>2.2.0</selenium.jupiter.version>
     </properties>
 
     <dependencies>
@@ -48,16 +47,22 @@
             <groupId>org.apache.tomee</groupId>
             <artifactId>javaee-api</artifactId>
             <version>8.0-4</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
             <version>${myfaces.version}</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <!-- TEST -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -70,17 +75,42 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- Selenium -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>3.141.59</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-support</artifactId>
+            <version>${selenium.version}</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <!-- Web Driver Management -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>selenium-jupiter</artifactId>
+            <scope>test</scope>
+            <version>2.1.1</version>
+            <type>jar</type>
+        </dependency>
+
+
         <dependency>
             <groupId>org.apache.tomee</groupId>
             <artifactId>tomee-embedded</artifactId>
             <version>${tomee.version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tomee</groupId>
             <artifactId>tomee-myfaces</artifactId>
             <version>${tomee.version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.primefaces.extensions</groupId>
@@ -107,6 +137,11 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
+        <resources>
+            <resource>
+                <directory>src/main/webapp</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -116,14 +151,6 @@
                     <source>${java.min.version}</source>
                     <target>${java.min.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.tomee.maven</groupId>
-                <artifactId>tomee-embedded-maven-plugin</artifactId>
-                <version>${tomee.version}</version>
-                <configuration>
-                    <context>ROOT</context>
                 </configuration>
             </plugin>
             <plugin>
@@ -138,16 +165,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <includes>
-                        <include>**/*Test</include>
-                    </includes>
-                    <systemPropertyVariables>
-                        <webdriver.chrome.driver>${webdriver.chromeDriverBinary}</webdriver.chrome.driver>
-                        <webdriver.gecko.driver>${webdriver.firefoxDriverBinary}</webdriver.gecko.driver>
-                        <webdriver.headless>${webdriver.headless}</webdriver.headless>
-                    </systemPropertyVariables>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -159,35 +176,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <!-- Headless mode -->
-        <profile>
-            <id>headless-mode</id>
-            <properties>
-                <webdriver.headless>true</webdriver.headless>
-            </properties>
-        </profile>
-        <!-- Test with chrome instead of firefox -->
-        <profile>
-            <id>chrome</id>
-            <properties>
-                <primefaces-selenium.adapter>org.primefaces.extensions.integrationtests.PrimeFacesSeleniumTomEEChromeAdapterImpl</primefaces-selenium.adapter>
-            </properties>
-        </profile>
-        <!-- Detect windows and set properties accordingly -->
-        <profile>
-            <id>windows-webdriver-binary</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-            <properties>
-                <webdriver.chromeDriverBinary>chromedriver.exe</webdriver.chromeDriverBinary>
-                <webdriver.firefoxDriverBinary>geckodriver.exe</webdriver.firefoxDriverBinary>
-            </properties>
-        </profile>
-    </profiles>
 
 </project>
