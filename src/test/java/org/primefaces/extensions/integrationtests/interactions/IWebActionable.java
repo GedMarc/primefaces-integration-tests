@@ -167,4 +167,27 @@ public interface IWebActionable {
 				+ "    window.requestAnimationFrame(intermediate);");
 		wait2Seconds();
 	}
+
+
+	//Wait for JQuery Load
+	default void waitForJQueryLoad() {
+		//Wait for jQuery to load
+		JavascriptExecutor jsExec = (JavascriptExecutor) getDriver();
+		WebDriverWait jsWait = new WebDriverWait(getDriver(), 10);
+		ExpectedCondition<Boolean> jQueryLoad = driver -> ((Long) ((JavascriptExecutor) getDriver())
+				.executeScript("try{return jQuery.active;}catch(e){return 1;}") == 0);
+
+		//Get JQuery is Ready
+		boolean jqueryReady = (Boolean) jsExec.executeScript("try {return jQuery.active==0;}catch(e){return false;}");
+
+		//Wait JQuery until it is Ready!
+		if(!jqueryReady) {
+			System.out.println("JQuery is NOT Ready!");
+			//Wait for jQuery to load
+			jsWait.until(jQueryLoad);
+			System.out.println("JQuery is NOW Ready!");
+		} else {
+			System.out.println("JQuery is Ready!");
+		}
+	}
 }

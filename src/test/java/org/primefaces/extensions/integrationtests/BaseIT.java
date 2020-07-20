@@ -1,10 +1,6 @@
 package org.primefaces.extensions.integrationtests;
 
 import io.github.bonigarcia.SeleniumExtension;
-import org.apache.openejb.testing.Application;
-import org.apache.openejb.testing.RandomPort;
-import org.apache.tomee.embedded.Configuration;
-import org.apache.tomee.embedded.Container;
 import org.apache.tomee.embedded.EmbeddedTomEEContainer;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -21,7 +17,6 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.primefaces.extensions.integrationtests.interactions.IDefaultTestCycle;
 import org.primefaces.extensions.integrationtests.interactions.IWebActionable;
-import org.primefaces.extensions.integrationtests.interactions.IWebElementFinder;
 
 
 import javax.ejb.embeddable.EJBContainer;
@@ -33,7 +28,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
 @ExtendWith({SeleniumExtension.class})
-public abstract class BaseIT implements IWebActionable, IWebElementFinder,IDefaultTestCycle {
+public abstract class BaseIT implements IWebActionable, IDefaultTestCycle {
 
     private final int port = 8080;
 
