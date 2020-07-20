@@ -85,8 +85,6 @@ public abstract class BaseIT implements IWebActionable, IWebElementFinder,IDefau
     @Tag("MyFaces")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     public class MyFaces implements IDefaultTestCycle {
-        private Container container;
-
         private void startFaces()
         {
             Map<Object, Object> properties = new HashMap();
@@ -102,14 +100,9 @@ public abstract class BaseIT implements IWebActionable, IWebElementFinder,IDefau
         @DisabledOnOs(OS.LINUX)
         //@Disabled
         public void testChrome(ChromeDriver chromeDriver) {
-            try {
-                startFaces();
-                setup(chromeDriver);
-                runTest(chromeDriver);
-            }finally {
-                if (container != null)
-                    container.close();
-            }
+            startFaces();
+            setup(chromeDriver);
+            runTest(chromeDriver);
         }
 
         @Test

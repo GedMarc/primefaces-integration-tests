@@ -112,18 +112,6 @@
             <version>${tomee.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.primefaces.extensions</groupId>
-            <artifactId>primefaces-selenium-core</artifactId>
-            <version>${primefaces-selenium.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.primefaces.extensions</groupId>
-            <artifactId>primefaces-selenium-components</artifactId>
-            <version>${primefaces-selenium.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
